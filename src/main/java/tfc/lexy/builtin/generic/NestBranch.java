@@ -15,7 +15,7 @@ public class NestBranch<T> extends Branch<T> {
 
     @Override
     public boolean shouldStart(LexyPosition<T> position) {
-        return (boolean) position.layer(this, () -> {
+        return position.layer(this, () -> {
             for (Branch<T> branch : branches) {
                 if (branch.shouldStart(position)) {
                     position.setData(branch);

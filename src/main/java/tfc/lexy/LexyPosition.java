@@ -14,11 +14,11 @@ public class LexyPosition<T> {
     public final ObjectProvider<T> provider;
     int layer;
 
-    public Object layer(Branch<T> b, Supplier<Object> r) {
+    public <A> A layer(Branch<T> b, Supplier<A> r) {
         layer++;
         Branch<T> prev = active;
         active = b;
-        Object o = r.get();
+        A o = r.get();
         active = prev;
         layer--;
         return o;

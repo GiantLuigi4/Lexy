@@ -12,7 +12,7 @@ public class FirstBranch<T> extends Branch<T> {
 
     @Override
     public boolean shouldStart(LexyPosition<T> position) {
-        return (boolean) position.layer(this, () -> {
+        return position.layer(this, () -> {
             for (Branch<T> branch : branches) {
                 if (position.provider.isEmpty())
                     break;
@@ -28,7 +28,7 @@ public class FirstBranch<T> extends Branch<T> {
 
     @Override
     public boolean shouldEnd(LexyPosition<T> position) {
-        return (boolean) position.layer(this, () -> {
+        return position.layer(this, () -> {
             Branch<T> b = position.getData(Branch.class);
             if (b.shouldEnd(position)) {
                 position.removeData();
