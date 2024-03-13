@@ -47,6 +47,6 @@ public class FirstBranch<T> extends Branch<T> {
     }
 
     public void end(LexyPosition<T> position) {
-        position.layer(this, position::removeData);
+        position.layer(this, (Runnable) position::removeData);
     }
 }

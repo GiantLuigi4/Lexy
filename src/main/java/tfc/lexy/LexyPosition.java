@@ -24,6 +24,15 @@ public class LexyPosition<T> {
         return o;
     }
 
+    public void layer(Branch<T> b, Runnable r) {
+        layer++;
+        Branch<T> prev = active;
+        active = b;
+        r.run();
+        active = prev;
+        layer--;
+    }
+
     public <A> A getData(Class<A> cls) {
         HashMap<Integer, Object> datas = this.datas.computeIfAbsent(active, (k) -> new HashMap<>());
         return (A) datas.get(layer);
