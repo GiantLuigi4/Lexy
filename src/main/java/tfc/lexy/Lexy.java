@@ -1,7 +1,6 @@
 package tfc.lexy;
 
 import tfc.lexy.util.ObjectProvider;
-import tfc.lexy.util.StringReader;
 
 import java.util.ArrayList;
 
@@ -45,5 +44,9 @@ public class Lexy<T> {
 
     public LexyPosition<T> getPosition() {
         return position;
+    }
+
+    public void setPosition(LexyPosition<T> position) {
+        this.position = position;
     }
 }
