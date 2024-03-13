@@ -35,4 +35,6 @@ public abstract class ObjectProvider<T> {
     public boolean isEmpty() {
         return index == size();
     }
+
+    public abstract ObjectProvider<T> copy();
 }

@@ -1,9 +1,8 @@
 package tfc.lexy;
 
 import tfc.lexy.util.ObjectProvider;
-import tfc.lexy.util.StringReader;
+import tfc.lexy.util.data.LexyCopyable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -13,6 +12,8 @@ public class LexyPosition<T> {
 
     public final ObjectProvider<T> provider;
     int layer;
+
+    int datUncopyable = 0;
 
     public <A> A layer(Branch<T> b, Supplier<A> r) {
         layer++;
@@ -40,12 +41,20 @@ public class LexyPosition<T> {
 
     public <A> A setData(A obj) {
         HashMap<Integer, Object> datas = this.datas.computeIfAbsent(active, (k) -> new HashMap<>());
-        return (A) datas.put(layer, obj);
+
+        A old = (A) datas.put(layer, obj);
+        if (old != null && !(old instanceof LexyCopyable)) datUncopyable--;
+        if (obj != null && !(obj instanceof LexyCopyable)) datUncopyable++;
+
+        return old;
     }
 
     public <A> A removeData() {
         HashMap<Integer, Object> datas = this.datas.computeIfAbsent(active, (k) -> new HashMap<>());
+
         A val = (A) datas.remove(layer);
+        if (val != null && !(val instanceof LexyCopyable)) datUncopyable--;
+
         if (datas.isEmpty())
             this.datas.remove(active);
         return val;
@@ -62,8 +71,18 @@ public class LexyPosition<T> {
 
     public LexyPosition<T> copy() {
         if (layer != 0) throw new RuntimeException("Cannot copy a position while in a layer.");
-        if (!datas.isEmpty()) throw new RuntimeException("Data is not empty");
-        return new LexyPosition<>(active, provider);
+        if (datUncopyable != 0) throw new RuntimeException("Data is not copy safe.");
+
+        LexyPosition<T> copy = new LexyPosition<>(active, provider.copy());
+        datas.forEach((k, v) -> {
+            HashMap<Integer, Object> mp = new HashMap<>();
+            copy.datas.put(k, mp);
+            v.forEach((k1, v1) -> {
+                mp.put(k1, ((LexyCopyable) v1).copy());
+            });
+        });
+
+        return copy;
     }
 
     public boolean canCopy() {

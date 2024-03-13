@@ -33,4 +33,11 @@ public class ArrayObjectProvider<T> extends ObjectProvider<T> {
         }
         return ts;
     }
+
+    @Override
+    public ObjectProvider<T> copy() {
+        ObjectProvider<T> cpy = new ArrayObjectProvider<>(internal);
+        cpy.index = this.index;
+        return cpy;
+    }
 }

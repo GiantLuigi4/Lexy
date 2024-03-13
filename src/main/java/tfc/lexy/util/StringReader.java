@@ -29,4 +29,11 @@ public class StringReader extends ObjectProvider<Character> {
         advance(1);
         return c;
     }
+
+    @Override
+    public ObjectProvider<Character> copy() {
+        ObjectProvider<Character> cpy = new StringReader(txt);
+        cpy.index = this.index;
+        return cpy;
+    }
 }

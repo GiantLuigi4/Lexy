@@ -2,6 +2,7 @@ package tfc.lexy.builtin.generic;
 
 import tfc.lexy.Branch;
 import tfc.lexy.LexyPosition;
+import tfc.lexy.util.data.DataBox;
 
 public class FirstBranch<T> extends Branch<T> {
     Branch<T>[] branches;
@@ -18,7 +19,7 @@ public class FirstBranch<T> extends Branch<T> {
                     break;
 
                 if (branch.shouldStart(position)) {
-                    position.setData(branch);
+                    position.setData(DataBox.of(branch));
                     return true;
                 }
             }
@@ -29,8 +30,8 @@ public class FirstBranch<T> extends Branch<T> {
     @Override
     public boolean shouldEnd(LexyPosition<T> position) {
         return position.layer(this, () -> {
-            Branch<T> b = position.getData(Branch.class);
-            if (b.shouldEnd(position)) {
+            DataBox<Branch<T>> b = position.getData(DataBox.class);
+            if (b.get().shouldEnd(position)) {
                 position.removeData();
                 return true;
             }
@@ -41,8 +42,8 @@ public class FirstBranch<T> extends Branch<T> {
     @Override
     public Object advance(LexyPosition<T> position) {
         return position.layer(this, () -> {
-            Branch<T> b = position.getData(Branch.class);
-            return b.advance(position);
+            DataBox<Branch<T>> b = position.getData(DataBox.class);
+            return b.get().advance(position);
         });
     }
 

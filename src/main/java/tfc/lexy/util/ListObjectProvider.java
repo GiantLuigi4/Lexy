@@ -33,4 +33,11 @@ public class ListObjectProvider<T> extends ObjectProvider<T> {
         }
         return ts;
     }
+
+    @Override
+    public ObjectProvider<T> copy() {
+        ObjectProvider<T> cpy = new ListObjectProvider<>(internal);
+        cpy.index = this.index;
+        return cpy;
+    }
 }
